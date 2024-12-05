@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@hyperswarm/rpc": "^3.3.2",
+    "dotenv": "^16.4.7",
     "hyperbee": "^2.20.7",
     "hypercore": "^10.38.1",
+    "hyperdht": "^6.20.1",
     "node-fetch": "^3.3.2",
-    "node-schedule": "^2.1.1"
+    "node-schedule": "^2.1.1",
+    "random-access-memory": "^6.2.1"
   },
   "scripts": {
-    "start": "node index.js",
-    "gather": "node scripts/data-gatherer.js"
+    "server": "node src/rpc-server.js",
+    "client": "node src/rpc-client.js"
+  },
+  "devDependencies": {
+    "@hyperswarm/rpc": "^3.3.2"
   }
 }
