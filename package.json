@@ -7,8 +7,11 @@
     "hyperbee": "^2.20.7",
     "hypercore": "^10.38.1",
     "hyperdht": "^6.20.1",
+    "hyperswarm": "^4.8.4",
     "node-fetch": "^3.3.2",
     "node-schedule": "^2.1.1",
+    "pino": "^9.5.0",
+    "random-access-file": "^4.1.1",
     "random-access-memory": "^6.2.1"
   },
   "scripts": {

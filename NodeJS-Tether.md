@@ -152,7 +152,7 @@ const main = async () => {
   await dht.ready()
 
   // public key of rpc server, used instead of address, the address is discovered via dht
-  const serverPubKey = Buffer.from('763cdd329d29dc35326865c4fa9bd33a45fdc2d8d2564b11978ca0d022a44a19', 'hex')
+  const serverPubKey = Buffer.from('5940ac93671c8e7c4ed019dcb6cac5fbf78efa4b196ce7bc7c60ac832fb974b7', 'hex')
 
   // rpc lib
   const rpc = new RPC({ dht })

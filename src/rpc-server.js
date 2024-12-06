@@ -14,9 +14,8 @@ export class CryptoRPCServer {
 
   async initialize() {
     // Initialize data storage and start data pipeline
-    await this.dataStorage.initialize();
     this.dataPipeline.startSchedule();
-
+    
     // Setup DHT
     this.dht = new DHT({
       port: 40001,
@@ -29,25 +28,33 @@ export class CryptoRPCServer {
     this.rpcServer = this.rpc.createServer();
 
     // Register RPC methods
+   
     this.rpcServer.respond('getLatestPrices', async (reqRaw) => {
-      const req = JSON.parse(reqRaw.toString('utf-8'));
-      const prices = await this.dataStorage.getLatestPrices(req.pairs);
-      return Buffer.from(JSON.stringify(prices), 'utf-8');
+      try {
+        const req = JSON.parse(reqRaw.toString('utf-8'));
+        console.log('Received request for getLatestPrices:', req.pairs);
+        const prices = await this.dataStorage.getLatestPrices(req.pairs);
+      
+        return Buffer.from(JSON.stringify(prices), 'utf-8');
+      } catch (error) {
+        console.error('Error in getLatestPrices:', error);
+        return Buffer.from(JSON.stringify({ error: 'Failed to fetch prices' }), 'utf-8');
+      }
     });
-
+    
     this.rpcServer.respond('getHistoricalPrices', async (reqRaw) => {
-      const req = JSON.parse(reqRaw.toString('utf-8'));
-      const prices = await this.dataStorage.getHistoricalPrices(
-        req.pairs, 
-        req.from, 
-        req.to
-      );
-      return Buffer.from(JSON.stringify(prices), 'utf-8');
+      try {
+        const req = JSON.parse(reqRaw.toString('utf-8'));
+        const prices = await this.dataStorage.getHistoricalPrices(req.pairs, req.from, req.to);
+        return Buffer.from(JSON.stringify(prices), 'utf-8');
+      } catch (error) {
+        console.error('Error in getHistoricalPrices:', error.message);
+        return Buffer.from(JSON.stringify({ error: 'Invalid request format or server error' }), 'utf-8');
+      }
     });
-
-    // Start listening
     await this.rpcServer.listen();
     console.log('RPC Server started. Public Key:', this.rpcServer.publicKey.toString('hex'));
+
   }
 
   async destroy() {

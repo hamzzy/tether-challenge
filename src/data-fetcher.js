@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import "dotenv/config";
 import { RateLimiter } from "./utils.js";
 import { URLSearchParams } from "url";
+
 export class CryptoDataFetcher {
   constructor() {
     this.apiBaseUrl = "https://api.coingecko.com/api/v3/";
@@ -19,7 +20,6 @@ export class CryptoDataFetcher {
 
   async apiRequest(endpoint, options = {}) {
     await this.rateLimiter.wait();
-
     // Build query string if provided
     const queryString = options.query ? `?${options.query.toString()}` : "";
 
@@ -83,10 +83,12 @@ export class CryptoDataFetcher {
   async fetchCryptoPrices(cryptocurrencies, exchanges) {
     const priceData = {};
 
-    for (const crypto of cryptocurrencies) {
+    // Build all price request promises concurrently
+    const pricePromises = cryptocurrencies.map(async (crypto) => {
       const cryptoPrices = [];
 
-      for (const exchange of exchanges) {
+      // Fetch prices for all exchanges concurrently
+      const exchangePromises = exchanges.map(async (exchange) => {
         try {
           const data = await this.apiRequest("simple/price", {
             query: new URLSearchParams({
@@ -108,12 +110,16 @@ export class CryptoDataFetcher {
             error
           );
         }
-      }
+      });
 
-      // Calculate average price
-      const avgPrice = cryptoPrices.length
-        ? cryptoPrices.reduce((sum, p) => sum + p.price, 0) / cryptoPrices.length
-        : null;
+      // Wait for all exchange requests to complete
+      await Promise.all(exchangePromises);
+
+      // Calculate average price after fetching all exchange data
+      const avgPrice =
+        cryptoPrices.length > 0
+          ? cryptoPrices.reduce((sum, p) => sum + p.price, 0) / cryptoPrices.length
+          : null;
 
       priceData[crypto.symbol] = {
         name: crypto.name,
@@ -121,7 +127,10 @@ export class CryptoDataFetcher {
         averagePrice: avgPrice,
         timestamp: Date.now(),
       };
-    }
+    });
+
+    // Wait for all cryptocurrency price fetches to complete
+    await Promise.all(pricePromises);
 
     return priceData;
   }
