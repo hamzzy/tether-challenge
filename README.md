@@ -28,13 +28,17 @@ npm install
 ```bash
 npx hyperdht --bootstrap --host 127.0.0.1 --port 30001
 ```
+3. Create .env with
+```
+COINGECKO_API_KEY =
+```
 
-3. Run the server:
+4. Run the server:
 ```bash
 npm run server
 ```
 
-4. Run the client (modify with your server's public key):
+5. Run the client (modify with your server's public key):
 ```bash
 npm run client
 ```

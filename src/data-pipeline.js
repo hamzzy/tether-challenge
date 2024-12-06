@@ -18,7 +18,6 @@ export class CryptoPipeline {
 
       // Fetch and process price data
       const priceData = await this.dataFetcher.fetchCryptoPrices(cryptocurrencies, exchanges);
-      // console.log(priceData)
       // // Store the data
       await this.dataStorage.storePriceData(priceData);
       console.log('Data pipeline completed successfully');

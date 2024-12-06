@@ -69,7 +69,7 @@ export class CryptoRPCClient {
 
 // Example usage
 async function main() {
-  const client = new CryptoRPCClient('8e37d4febfeb816926ee20d7952ae16bf17fc54e1ca5d7c62d95d94dea819d2e');
+  const client = new CryptoRPCClient('a1e32735e11919933d446f517ccd2cb7406c9c6b11c5a219c74e455c0a950a5d');
   await client.initialize();
 
   try {
